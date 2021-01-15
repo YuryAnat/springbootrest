@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div th:replace="login :: header"></div>
+
+<!--/*@thymesVar id="role" type="crud.model.Role"*/-->
+<div>
+    <form action="#" th:action="@{/admin/newRole}" th:object="${role}" method="post">
+        <fieldset th:replace="editRole :: role_data"></fieldset>
+        <br><input type="submit" value="Save">
+    </form>
+</div>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xmlns:th="http://www.thymeleaf.org">
+<!--/*@thymesVar id="user" type="crud.model.User"*/-->
+<head>
+    <title>Edit users</title>
+    <meta charset="UTF-8">
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+    </style>
+</head>
+<body>
+<div th:replace="login :: header"></div>
+<div>
+    <th:block th:if="${#lists.isEmpty(users)}">
+        <p>User list is empty!</p><br>
+    </th:block>
+    <table>
+        <tr>
+            <th>id</th>
+            <th>name</th>
+            <th>last name</th>
+            <th>email</th>
+            <th>role</th>
+            <th>action</th>
+        </tr>
+        <th:block th:each="user : ${users}">
+            <tr>
+                <td th:text="${user.id}"></td>
+                <td th:text="${user.name}"></td>
+                <td th:text="${user.lastName}"></td>
+                <td th:text="${user.email}"></td>
+                <td>
+                    <ul>
+                        <li th:each="role : ${user.getRolesNames()}" th:text="${role}"></li>
+                    </ul>
+                </td>
+                <td>
+                    <a th:href="@{/admin/editUser(id=${user.id})}"><button>Edit</button></a>
+                    <a th:href="@{/admin/removeUser(id=${user.id})}"><button>Remove</button></a>
+                </td>
+            </tr>
+        </th:block>
+    </table>
+</div>
+<div>
+    <br>
+    <a th:href="@{/admin/newUser}"><button>Add new user</button></a>
+</div>
+</body>
+</html>

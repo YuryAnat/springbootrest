@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit user</title>
+</head>
+<body>
+<div th:replace="login :: header"></div>
+<div>
+    <div>
+        <!--/*@thymesVar id="user" type="crud.model.User"*/-->
+        <!--/*@thymesVar id="role" type="crud.model.Role"*/-->
+        <form action="#" th:action="@{/admin/editUser}" th:object="${user}" method="post">
+            <fieldset th:fragment="user_data">
+                <legend>User data</legend>
+                <input type="hidden" id="id" name="id" th:field="*{id}" th:value="${user.id}"><br>
+                <label for="fname">First name:</label><br>
+                <input type="text" id="fname" name="fname" th:field="*{name}" th:value="${user.name}"><br>
+                <label for="lname">Last name:</label><br>
+                <input type="text" id="lname" name="lname" th:field="*{lastName}" th:value="${user.lastName}"><br>
+                <label for="email">Email:</label><br>
+                <input type="text" id="email" name="email" th:field="*{email}" th:value="${user.email}"><br>
+                <th:block th:if="${user.id != 0}">
+                    <input type="hidden" placeholder="password" name="pass" th:field="*{password}"
+                           th:value="${user.password}"><br>
+                </th:block>
+                <th:block th:unless="${user.id != 0}">
+                    <label for="pass">Password:</label><br>
+                    <input type="password" name="pass" id="pass" th:field="*{password}"><br>
+                    <label for="confpass">Confirm password:</label><br>
+                    <input type="password" name="pass" id="confpass" th:field="*{confirmPassword}"><br>
+                </th:block>
+            </fieldset>
+            <fieldset th:fragment="user_role">
+                <legend>User role</legend>
+                <input th:type="hidden" th:field="*{roles}" th:value="${user.roles}">
+                <div th:each="role : ${roles}">
+                    <label th:for="'role_' + ${role.id}" th:text="${role.getSimpleRoleName()}"></label>
+                    <input th:id="'role_' + ${role.id}" th:name="'role_' + ${role.id}" type="checkbox" th:checked="${user.getRolesNames().contains(role.getSimpleRoleName())}"/><br>
+                </div>
+            </fieldset>
+<!--            <fieldset th:fragment="user_settings">-->
+<!--                <legend>Profile settings</legend>-->
+<!--                <label for="enabled">Enable</label>-->
+<!--                <input id="enabled" name="enabled" type="checkbox" th:checked="${user.enabled}"-->
+<!--                       th:field="*{enabled}"><br>-->
+<!--                <label for="isAccountNonExpired">Account non expired</label>-->
+<!--                <input id="isAccountNonExpired" name="isAccountNonExpired" type="checkbox"-->
+<!--                       th:checked="${user.accountNonExpired}" th:field="*{accountNonExpired}"><br>-->
+<!--                <label for="isCredentialsNonExpired">Credentials non expired</label>-->
+<!--                <input id="isCredentialsNonExpired" name="isCredentialsNonExpired" type="checkbox"-->
+<!--                       th:checked="${user.credentialsNonExpired}" th:field="*{credentialsNonExpired}"><br>-->
+<!--                <label for="isAccountNonLocked">Account non locked</label>-->
+<!--                <input id="isAccountNonLocked" name="isAccountNonLocked" type="checkbox"-->
+<!--                           th:checked="${user.accountNonLocked}" th:field="*{accountNonLocked}"><br>-->
+<!--            </fieldset>-->
+            <br><input type="submit" value="Save">
+        </form>
+    </div>
+</div>
+</body>
+</html>
