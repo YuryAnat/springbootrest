@@ -47,6 +47,10 @@ public class User implements UserDetails {
         }
     }
 
+    public static User create(){
+        return new User();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;

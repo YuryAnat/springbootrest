@@ -1,18 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <meta charset="UTF-8">
     <title>User page</title>
 </head>
 <body>
-<div th:replace="login :: header"></div>
-<div>
-    <th:block th:object="${user}">
-        <p th:text="${user.name}"></p>
-        <p th:text="${user.lastName}"></p>
-        <p th:text="${user.email}"></p>
-    </th:block>
+<div th:replace="fragments/headPanel.html :: header"></div>
+<div class="color-input-field" th:object="${user}">
+    <div class="row flex-grow-1">
+        <div class="col-3 col-md-3">
+            <div class="list-group">
+                <th:block th:if="${user.getRolesNames().contains('Administrators')}">
+                    <a th:href="@{/admin}" class="list-gfroup-item list-group-item-action">Admin</a>
+                </th:block>
+                <a th:href="@{/user}" class="list-group-item list-group-item-action active">User</a>
+            </div>
+        </div>
+        <div class="col-9 col-md-9">
+            <!--/*@thymesVar id="user" type="com.anat.springboot.model.User"*/-->
+            <!--/*@thymesVar id="role" type="com.anat.springboot.model.Role"*/-->
+            <h4>User information page</h4>
+            <br>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">id</th>
+                    <th scope="col">name</th>
+                    <th scope="col">last name</th>
+                    <th scope="col">email</th>
+                    <th scope="col">role</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td th:text="${user.id}"></td>
+                    <td th:text="${user.name}"></td>
+                    <td th:text="${user.lastName}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td>
+                        <ul>
+                            <li th:each="role : ${user.getRolesNames()}" th:text="${role}"></li>
+                        </ul>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
 </body>
 </html>
