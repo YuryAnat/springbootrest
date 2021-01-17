@@ -61,7 +61,12 @@ public class WebController {
 
     @GetMapping(value = "/admin")
     public String adminPage(ModelMap modelMap, Principal principal) {
-        User user = userService.getUserByEmail(principal.getName());
+        User user = null;
+        try {
+            user = userService.getUserByEmail(principal.getName());
+        } catch (Exception e) {
+            return "redirect:logout";
+        }
         List<User> users = userService.getUsers();
         Set<Role> roles = roleService.getRoles();
         modelMap.put("user", user);
@@ -77,7 +82,7 @@ public class WebController {
         user.setName(allParams.get("fname"));
         user.setLastName(allParams.get("lname"));
         user.setEmail(allParams.get("email"));
-        if (!allParams.get("pass").equals("************")){
+        if (!allParams.get("pass").equals("************")) {
             user.setPassword(bCryptPasswordEncoder.encode(allParams.get("pass")));
         }
         user.getRoles().clear();
