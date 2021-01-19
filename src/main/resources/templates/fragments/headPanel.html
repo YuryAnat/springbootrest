@@ -13,14 +13,13 @@
     <div sec:authorize="isAuthenticated()" class="row justify-content-between text-white bg-dark" th:object="${user}">
         <div class="col-4 align-align-bottom text-left">
             <h4>
-                <a th:text="${user.getName() + ' with roles: ' + #strings.listJoin(user.getRolesNames(), ';')}" class="float-left"></a>
+                <a th:text="${user.getName() + ' with roles: ' + #strings.listJoin(user.getRolesNames(), ';')}"
+                   class="float-left"></a>
             </h4>
         </div>
-        <h5>
-            <div class="col-4 align-align-bottom">
-                <a th:href="@{/logout}" class="float-right">logout</a>
-            </div>
-        </h5>
+        <div class="col-4 align-align-bottom">
+            <h5><a th:href="@{/logout}" class="float-right">logout</a></h5>
+        </div>
     </div>
     <br>
 </div>

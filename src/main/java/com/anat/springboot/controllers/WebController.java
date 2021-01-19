@@ -45,13 +45,9 @@ public class WebController {
 
     @GetMapping(value = "/user")
     public String userPage(ModelMap model, Authentication authentication) {
-        if (authentication.isAuthenticated()) {
-            User currentUser = userService.getUserByEmail(authentication.getName());
-            model.addAttribute("user", currentUser);
-            return "user";
-        } else {
-            return "redirect:/login";
-        }
+        User currentUser = userService.getUserByEmail(authentication.getName());
+        model.addAttribute("user", currentUser);
+        return "user";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -75,21 +71,9 @@ public class WebController {
         return "admin";
     }
 
-
     @PostMapping(value = "/admin/editUser")
-    public String editUserSubmit(@RequestParam Map<String, String> allParams) {
-        User user = userService.getUser(Integer.parseInt(allParams.get("id")));
-        user.setName(allParams.get("fname"));
-        user.setLastName(allParams.get("lname"));
-        user.setEmail(allParams.get("email"));
-        if (!allParams.get("pass").equals("************")) {
-            user.setPassword(bCryptPasswordEncoder.encode(allParams.get("pass")));
-        }
-        user.getRoles().clear();
-        user.getRoles().addAll(allParams.entrySet().stream()
-                .filter(e -> e.getKey().equals("roles[]"))
-                .map(e -> roleService.getRole(Integer.parseInt(e.getValue())))
-                .collect(Collectors.toSet()));
+    public String editUserSubmit(User user) {
+        user.setRoles(user.getRoles().stream().map(role -> roleService.getRoleByName(role.getRoleName())).collect(Collectors.toSet()));
         userService.editUser(user);
         return "redirect:/admin";
     }
@@ -101,12 +85,8 @@ public class WebController {
     }
 
     @PostMapping("/admin/newUser")
-    public String newUser(@RequestParam Map<String, String> allParams) {
-        Set<Role> roles = allParams.entrySet().stream()
-                .filter(e -> e.getKey().equals("roles[]"))
-                .map(e -> roleService.getRole(Integer.parseInt(e.getValue())))
-                .collect(Collectors.toSet());
-        User user = new User(allParams.get("fname"), allParams.get("lname"), allParams.get("email"), allParams.get("pass"), roles);
+    public String newUser(User user) {
+        user.setRoles(user.getRoles().stream().map(role -> roleService.getRoleByName(role.getRoleName())).collect(Collectors.toSet()));
         userService.saveUser(user);
         return "redirect:/admin";
     }

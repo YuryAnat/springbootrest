@@ -26,8 +26,6 @@ public class User implements UserDetails {
     private String name;
     private String lastName;
     private String password;
-    @Transient
-    private String confirmPassword;
     @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
     private Set<Role> roles;
 
@@ -45,10 +43,6 @@ public class User implements UserDetails {
         }else {
             return Collections.emptySet();
         }
-    }
-
-    public static User create(){
-        return new User();
     }
 
     @Override

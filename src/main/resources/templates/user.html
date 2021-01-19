@@ -8,17 +8,17 @@
 </head>
 <body>
 <div th:replace="fragments/headPanel.html :: header"></div>
-<div class="color-input-field" th:object="${user}">
+<div class="container-fluid color-input-field" th:object="${user}">
     <div class="row flex-grow-1">
-        <div class="col-3 col-md-3">
+        <div class="col-2">
             <div class="list-group">
                 <th:block th:if="${user.getRolesNames().contains('Administrators')}">
-                    <a th:href="@{/admin}" class="list-gfroup-item list-group-item-action">Admin</a>
+                    <a th:href="@{/admin}" class="list-group-item list-group-item-action">Admin</a>
                 </th:block>
                 <a th:href="@{/user}" class="list-group-item list-group-item-action active">User</a>
             </div>
         </div>
-        <div class="col-9 col-md-9">
+        <div class="col-10">
             <!--/*@thymesVar id="user" type="com.anat.springboot.model.User"*/-->
             <!--/*@thymesVar id="role" type="com.anat.springboot.model.Role"*/-->
             <h4>User information page</h4>
