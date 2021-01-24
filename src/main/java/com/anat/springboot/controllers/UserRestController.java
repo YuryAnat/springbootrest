@@ -40,7 +40,9 @@ public class UserRestController {
 
     @PostMapping(value = "/admin/rest/newUser")
     public void newUser(@RequestBody User newUser) {
-        newUser.setRoles(newUser.getRoles().stream().map(role -> roleService.getRoleByName(role.getRoleName())).collect(Collectors.toSet()));
+        if (newUser.getRoles() != null){
+            newUser.setRoles(newUser.getRoles().stream().map(role -> roleService.getRoleByName(role.getRoleName())).collect(Collectors.toSet()));
+        }
         userService.saveUser(newUser);
     }
 

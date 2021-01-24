@@ -1,7 +1,7 @@
 let $userModal = $('#user_modal');
 
-$('#allUsers').on('show.bs.modal', function (event) {
-    const promise = loadUsers();
+$( document ).ready(function() {
+    loadUsers();
 });
 
 $userModal.on('show.bs.modal', function (event) {
@@ -30,8 +30,8 @@ $userModal.on('show.bs.modal', function (event) {
 async function sendDeleteUser() {
     let id = $('#modal_id').val();
     await fetch('/admin/rest/deleteUser/' + id);
-    loadUsers();
     $userModal.modal('hide');
+    loadUsers();
 }
 
 async function sendEditUser() {
@@ -57,11 +57,9 @@ async function sendEditUser() {
         },
         body: userInput
     });
-    loadUsers();
     $userModal.modal('hide');
-    $('#adminTabs a[href="#allUsers"]').tab('show')
+    loadUsers();
 }
-
 
 async function sendNewUser() {
     var formInput = $("#newUser :input").serializeArray();
@@ -86,11 +84,9 @@ async function sendNewUser() {
         },
         body: userInput
     });
-    loadUsers();
     $('#adminTabs a[href="#allUsers"]').tab('show')
-    clearNewUserForm()
+    clearUserForm()
 }
-
 
 async function loadUsers() {
     $('#userTable tbody').empty();
@@ -133,7 +129,11 @@ async function setUserModalForm(id) {
     });
 }
 
-function clearNewUserForm() {
+$('.nav-tabs a[href="#allUsers"]').on('shown.bs.tab', function(event){
+    loadUsers();
+});
+
+function clearUserForm() {
     let $newUser = $('#newUser');
     $newUser.find("input").val('');
     $newUser.find("option:selected").prop('selected', false);
