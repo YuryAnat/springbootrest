@@ -39,22 +39,24 @@ public class UserRestController {
     }
 
     @PostMapping(value = "/admin/rest/newUser")
-    public void newUser(@RequestBody User newUser) {
-        if (newUser.getRoles() != null){
+    public User newUser(@RequestBody User newUser) {
+        if (newUser.getRoles() != null) {
             newUser.setRoles(newUser.getRoles().stream().map(role -> roleService.getRoleByName(role.getRoleName())).collect(Collectors.toSet()));
         }
         userService.saveUser(newUser);
+        return newUser;
     }
 
     @PostMapping("/admin/rest/editUser")
-    public void editUser(@RequestBody User user) {
+    public User editUser(@RequestBody User user) {
         user.setRoles(user.getRoles().stream().map(role -> roleService.getRoleByName(role.getRoleName())).collect(Collectors.toSet()));
-        if (user.getPassword().isEmpty()){
+        if (user.getPassword().isEmpty()) {
             user.setPassword(userService.getUser(user.getId()).getPassword());
         } else {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
         userService.editUser(user);
+        return user;
     }
 
     @GetMapping(value = "/admin/rest/deleteUser/{id}")

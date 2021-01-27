@@ -1,6 +1,6 @@
 let $userModal = $('#user_modal');
 
-$( document ).ready(function() {
+$(document).ready(function () {
     loadUsers();
 });
 
@@ -27,21 +27,15 @@ $userModal.on('show.bs.modal', function (event) {
     }
 });
 
-async function sendDeleteUser() {
-    let id = $('#modal_id').val();
-    await fetch('/admin/rest/deleteUser/' + id);
-    $userModal.modal('hide');
-    loadUsers();
-}
-
 async function sendEditUser() {
-    var formInput = $("#userForm").serializeArray();
-    var data = {};
-    var roles = [];
+    let id = $('#modal_id').val();
+    let formInput = $("#userForm").serializeArray();
+    let data = {};
+    let roles = [];
 
     $(formInput).each(function (index, obj) {
         if (obj.name === 'roles') {
-            roles.push(obj.value)
+            roles.push(obj.value);
             data['roles'] = roles;
         } else {
             data[obj.name] = obj.value;
@@ -57,8 +51,16 @@ async function sendEditUser() {
         },
         body: userInput
     });
+
+    if (response.status === 200){
+        response.json().then(user => {
+            let userRow = userToRow(user);
+            $('tr[id="' + id + '"]').replaceWith(userRow);
+        })
+    } else {
+        alert(response.error());
+    }
     $userModal.modal('hide');
-    loadUsers();
 }
 
 async function sendNewUser() {
@@ -84,8 +86,19 @@ async function sendNewUser() {
         },
         body: userInput
     });
-    $('#adminTabs a[href="#allUsers"]').tab('show')
-    clearUserForm()
+
+    if (response.status === 200){
+        let returnUser = response.json().then(user => {
+            let userRow = userToRow(user);
+            $('#userTable tbody').append(userRow);
+        });
+
+        $('#adminTabs a[href="#allUsers"]').tab('show');
+        clearUserForm();
+    } else {
+        alert(response.error());
+    }
+
 }
 
 async function loadUsers() {
@@ -93,7 +106,13 @@ async function loadUsers() {
     const response = await fetch('/admin/rest/users');
     const result = await response.json();
     result.forEach(user => {
-        let userRow = `$(<tr>
+        let userRow = userToRow(user)
+        $('#userTable tbody').append(userRow);
+    });
+}
+
+function userToRow(user) {
+    return `$(<tr id="${user.id}">
                         <th scope="row">${user.id}</th>
                         <td>${user.name}</td>
                         <td>${user.lastName}</td>
@@ -110,11 +129,21 @@ async function loadUsers() {
                             <button class="btn btn-danger btn-sm" data-toggle="modal" data-id="${user.id}" data-target="#user_modal" data-action="deleteUser">Delete</button>
                         </td>
                     </tr>)`;
-        $('#userTable tbody').append(userRow);
+}
+
+function sendDeleteUser() {
+    let id = $('#modal_id').val();
+    fetch('/admin/rest/deleteUser/' + id).then(function (respone) {
+        if (respone.status === 200){
+            $('tr[id="' + id + '"]').remove();
+            $userModal.modal('hide');
+        }else {
+            alert(respone.error());
+        }
     });
 }
 
-async function setUserModalForm(id) {
+function setUserModalForm(id) {
     fetch('/admin/rest/user/' + id)
         .then(function (response) {
             return response.json();
@@ -128,10 +157,6 @@ async function setUserModalForm(id) {
         }
     });
 }
-
-$('.nav-tabs a[href="#allUsers"]').on('shown.bs.tab', function(event){
-    loadUsers();
-});
 
 function clearUserForm() {
     let $newUser = $('#newUser');
